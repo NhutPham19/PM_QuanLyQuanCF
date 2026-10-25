@@ -23,6 +23,7 @@ import {
   CreditCard,
   UtensilsCrossed,
   Bike,
+  LogOut,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/auth/AuthProvider";
@@ -33,7 +34,7 @@ interface CartItem {
 }
 
 export const PosPage: React.FC = () => {
-  const { user } = useAuth();
+  const { user, role, logout } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCatId, setSelectedCatId] = useState<string>("ALL");
@@ -231,19 +232,34 @@ export const PosPage: React.FC = () => {
       <header className="bg-white border-b border-slate-200 sticky top-0 z-30 px-4 py-3 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <Link
-              to="/"
-              className="p-2 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors flex items-center gap-1.5 text-xs font-bold"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span className="hidden sm:inline">Về Quản Trị</span>
-            </Link>
+            {role === "admin" || user?.email === "admin@gmail.com" ? (
+              <Link
+                to="/"
+                className="p-2 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors flex items-center gap-1.5 text-xs font-bold"
+                title="Quay lại Bảng Quản Trị"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span className="hidden sm:inline">Về Quản Trị</span>
+              </Link>
+            ) : (
+              <button
+                onClick={() => logout()}
+                className="p-2 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-600 transition-colors flex items-center gap-1.5 text-xs font-bold border border-rose-200/60"
+                title="Đăng xuất khỏi ca bán"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="hidden sm:inline">Đăng Xuất</span>
+              </button>
+            )}
             <div>
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
                 <h1 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
                   Máy Bán Hàng (POS)
                 </h1>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 hidden sm:inline-block">
+                  {user?.email ?? "Thu Ngân"}
+                </span>
               </div>
               <p className="text-[11px] font-semibold text-slate-500">
                 Cà Phê Gia Đình • Chạm để chọn món

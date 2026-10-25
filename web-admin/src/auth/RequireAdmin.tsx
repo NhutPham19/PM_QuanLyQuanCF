@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "./AuthProvider";
 
 export const RequireAdmin: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { user, loading } = useAuth();
+  const { user, role, loading } = useAuth();
 
   if (loading) {
     return (
@@ -18,6 +18,10 @@ export const RequireAdmin: React.FC<{ children: ReactNode }> = ({ children }) =>
     return <Navigate to="/login" replace />;
   }
 
-  // Cho phép tất cả tài khoản đăng nhập đều có thể truy cập và kiểm thử theo yêu cầu
+  // Nếu là tài khoản Thu Ngân POS (post@gmail.com), tự động đưa thẳng vào Màn Hình Bán Hàng (/pos)
+  if (role !== "admin") {
+    return <Navigate to="/pos" replace />;
+  }
+
   return <>{children}</>;
 };

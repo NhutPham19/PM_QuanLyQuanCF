@@ -13,10 +13,14 @@ export const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Nếu đã đăng nhập với quyền admin thì chuyển thẳng về trang chủ
+  // Tự động chuyển hướng đúng vai trò khi đã đăng nhập
   React.useEffect(() => {
-    if (user && role === "admin") {
-      navigate("/", { replace: true });
+    if (user) {
+      if (role === "admin") {
+        navigate("/", { replace: true });
+      } else if (role === "staff") {
+        navigate("/pos", { replace: true });
+      }
     }
   }, [user, role, navigate]);
 
@@ -50,7 +54,11 @@ export const LoginPage: React.FC = () => {
     try {
       setLoading(true);
       await login(email, password);
-      navigate("/", { replace: true });
+      if (email.toLowerCase().includes("post") || email.toLowerCase().includes("pos")) {
+        navigate("/pos", { replace: true });
+      } else {
+        navigate("/", { replace: true });
+      }
     } catch (err: unknown) {
       setError(parseFirebaseError(err));
     } finally {
