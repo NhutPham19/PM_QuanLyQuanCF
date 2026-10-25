@@ -1,0 +1,11 @@
+{
+  "name": "Quản Trị Quán Cà Phê Gia Đình",
+  "short_name": "Admin QLCF",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#F8FAFC",
+  "theme_color": "#4338CA",
+  "description": "Bảng điều khiển quản trị quán cà phê gia đình tối ưu cho iPhone Safari",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false
+}

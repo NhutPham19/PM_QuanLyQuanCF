@@ -1,0 +1,49 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{db}/documents {
+    function signedIn() { return request.auth != null; }
+    function isAdmin()  { return signedIn() && request.auth.token.role == 'ADMIN'; }
+    function isPos()    { return signedIn() && request.auth.token.role == 'POS'; }
+
+    // Danh mục & loại chi: Mọi tài khoản đăng nhập đều được đọc, chỉ Admin được tạo/sửa/xóa
+    match /categories/{id}         { allow read: if signedIn(); allow write: if isAdmin(); }
+    match /expense_categories/{id} { allow read: if signedIn(); allow write: if isAdmin(); }
+
+    // Sản phẩm:
+    // - POS chỉ được cập nhật tồn kho (stockQuantity) và updatedAt
+    // - Chỉ Admin được tạo mới, xóa hoặc sửa giá, tên, danh mục
+    match /products/{id} {
+      allow read: if signedIn();
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin() || (isPos() &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['stockQuantity', 'updatedAt']));
+    }
+
+    // Đơn hàng:
+    // - Đăng nhập là tạo được đơn
+    // - POS chỉ được hủy đơn của chính mình tạo trong vòng 10 phút đầu
+    match /orders/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn();
+      allow update: if isAdmin() || (isPos()
+        && resource.data.createdBy == request.auth.uid
+        && request.time < resource.data.createdAt + duration.value(10, 'm')
+        && request.resource.data.status == 'VOIDED'
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'voidedAt', 'voidedBy']));
+      allow delete: if false; // Không xóa cứng đơn hàng
+    }
+
+    // Khoản chi / Nhập hàng:
+    match /expenses/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn();
+      allow update: if isAdmin();
+      allow delete: if false;
+    }
+
+    // Sổ tổng kết ngày:
+    match /daily_summaries/{day} {
+      allow read, write: if signedIn();
+    }
+  }
+}
