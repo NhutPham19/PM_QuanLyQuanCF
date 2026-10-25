@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
+import 'data/repositories/auth_repository.dart';
 import 'features/admin/admin_dashboard.dart';
 import 'features/auth/admin_login_screen.dart';
 
@@ -70,11 +71,130 @@ class AdminAuthGate extends StatelessWidget {
 
         final user = snapshot.data;
         if (user != null) {
-          return const AdminDashboard();
+          return FutureBuilder<UserRole>(
+            future: AuthRepository().getUserRole(),
+            builder: (context, roleSnapshot) {
+              if (roleSnapshot.connectionState == ConnectionState.waiting) {
+                return const Scaffold(
+                  backgroundColor: Color(0xFF0F172A),
+                  body: Center(
+                    child: CircularProgressIndicator(color: Color(0xFF6366F1)),
+                  ),
+                );
+              }
+
+              final role = roleSnapshot.data;
+              if (role == UserRole.admin) {
+                return const AdminDashboard();
+              }
+
+              // Nếu là tài khoản POS hoặc không phải ADMIN:
+              return AccessDeniedScreen(userEmail: user.email ?? '');
+            },
+          );
         }
 
         return const AdminLoginScreen();
       },
+    );
+  }
+}
+
+class AccessDeniedScreen extends StatelessWidget {
+  final String userEmail;
+
+  const AccessDeniedScreen({super.key, required this.userEmail});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF0F172A),
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 440),
+            child: Container(
+              padding: const EdgeInsets.all(32),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1E293B),
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(
+                  color: const Color(0xFFEF4444).withValues(alpha: 0.3),
+                  width: 1.5,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.4),
+                    blurRadius: 24,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 64,
+                    height: 64,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: const Color(0xFFEF4444).withValues(alpha: 0.15),
+                      border: Border.all(color: const Color(0xFFEF4444), width: 2),
+                    ),
+                    child: const Icon(
+                      Icons.shield_outlined,
+                      color: Color(0xFFEF4444),
+                      size: 32,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Truy Cập Bị Từ Chối',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Tài khoản "$userEmail" được phân quyền là Thu Ngân (POS) dành cho Ba Mẹ bán hàng trên máy Android.\n\nChỉ tài khoản Quản Trị Viên (Admin) mới có quyền truy cập Bảng Quản Trị này.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.7),
+                      fontSize: 13,
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 28),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: ElevatedButton.icon(
+                      onPressed: () async {
+                        await FirebaseAuth.instance.signOut();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF4F46E5),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                      icon: const Icon(Icons.logout_rounded, size: 18),
+                      label: const Text(
+                        'Đăng Xuất & Đổi Tài Khoản Admin',
+                        style: TextStyle(fontWeight: FontWeight.w800, fontSize: 13),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

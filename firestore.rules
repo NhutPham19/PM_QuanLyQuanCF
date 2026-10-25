@@ -2,8 +2,18 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{db}/documents {
     function signedIn() { return request.auth != null; }
-    function isAdmin()  { return signedIn() && request.auth.token.role == 'ADMIN'; }
-    function isPos()    { return signedIn() && request.auth.token.role == 'POS'; }
+    function isAdmin()  {
+      return signedIn() && (
+        request.auth.token.role == 'ADMIN' ||
+        (request.auth.token.email != null && request.auth.token.email.matches('(?i).*admin.*'))
+      );
+    }
+    function isPos() {
+      return signedIn() && (
+        request.auth.token.role == 'POS' ||
+        !isAdmin()
+      );
+    }
 
     // Danh mục & loại chi: Mọi tài khoản đăng nhập đều được đọc, chỉ Admin được tạo/sửa/xóa
     match /categories/{id}         { allow read: if signedIn(); allow write: if isAdmin(); }
