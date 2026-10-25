@@ -25,7 +25,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
   @override
   void initState() {
     super.initState();
-    _productRepo.seedInitialDataIfEmpty();
+    _productRepo.seedInitialDataIfEmpty().catchError((_) {});
   }
 
   @override

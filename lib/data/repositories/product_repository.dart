@@ -144,10 +144,11 @@ class ProductRepository {
 
   /// Nạp sẵn dữ liệu mẫu ban đầu nếu cơ sở dữ liệu trống
   Future<void> seedInitialDataIfEmpty() async {
-    final catSnapshot = await _firestore.collection('categories').limit(1).get();
-    if (catSnapshot.docs.isNotEmpty) {
-      return; // Đã có dữ liệu, không ghi đè
-    }
+    try {
+      final catSnapshot = await _firestore.collection('categories').limit(1).get();
+      if (catSnapshot.docs.isNotEmpty) {
+        return; // Đã có dữ liệu, không ghi đè
+      }
 
     final batch = _firestore.batch();
 
@@ -301,5 +302,8 @@ class ProductRepository {
     }
 
     await batch.commit();
+    } catch (_) {
+      // Bỏ qua ngoại lệ an toàn nếu mạng offline hoặc chưa đăng nhập
+    }
   }
 }
