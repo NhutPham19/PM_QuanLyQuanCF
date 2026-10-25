@@ -144,8 +144,11 @@ class _SalesScreenState extends State<SalesScreen> {
         ],
       ),
       body: SafeArea(
-        child: Column(
-          children: [
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 650),
+            child: Column(
+              children: [
             // 1. CÔNG TẮC CHẾ ĐỘ: UỐNG TẠI QUÁN vs MANG VỀ
             Container(
               color: Colors.white,
@@ -303,16 +306,23 @@ class _SalesScreenState extends State<SalesScreen> {
           ],
         ),
       ),
+    ),
+  ),
 
       // 4. THANH GHIM ĐÁY (STICKY BOTTOM BAR): XEM ĐƠN & HOÀN TẤT
       bottomSheet: _totalItemCount > 0
-          ? Container(
-              color: Colors.transparent,
-              padding: const EdgeInsets.all(16),
-              child: SizedBox(
-                height: 68,
-                width: double.infinity,
-                child: ElevatedButton(
+          ? SafeArea(
+              child: Center(
+                heightFactor: 1.0,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 650),
+                  child: Container(
+                    color: Colors.transparent,
+                    padding: const EdgeInsets.all(16),
+                    child: SizedBox(
+                      height: 68,
+                      width: double.infinity,
+                      child: ElevatedButton(
                   onPressed: () async {
                     final items = _buildOrderItems();
                     final result = await Navigator.push<bool>(
@@ -384,8 +394,11 @@ class _SalesScreenState extends State<SalesScreen> {
                   ),
                 ),
               ),
-            )
-          : null,
+            ),
+          ),
+        ),
+      )
+    : null,
     );
   }
 

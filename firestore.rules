@@ -5,13 +5,13 @@ service cloud.firestore {
     function isAdmin()  {
       return signedIn() && (
         request.auth.token.role == 'ADMIN' ||
-        (request.auth.token.email != null && request.auth.token.email.matches('(?i).*admin.*'))
+        request.auth.token.email == 'admin@quanlycf.com'
       );
     }
     function isPos() {
       return signedIn() && (
         request.auth.token.role == 'POS' ||
-        !isAdmin()
+        request.auth.token.email == 'post@quanlycf.com'
       );
     }
 

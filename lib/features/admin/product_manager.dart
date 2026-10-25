@@ -74,7 +74,7 @@ class _ProductManagerScreenState extends State<ProductManagerScreen> {
                     // Chọn danh mục
                     if (categories != null && categories.isNotEmpty)
                       DropdownButtonFormField<String>(
-                        value: selectedCatId.isNotEmpty ? selectedCatId : categories.first.id,
+                        initialValue: selectedCatId.isNotEmpty ? selectedCatId : categories.first.id,
                         decoration: const InputDecoration(
                           labelText: 'Danh mục',
                           border: OutlineInputBorder(),

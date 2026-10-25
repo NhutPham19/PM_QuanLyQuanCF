@@ -6,6 +6,7 @@ import 'firebase_options.dart';
 import 'data/repositories/auth_repository.dart';
 import 'features/admin/admin_dashboard.dart';
 import 'features/auth/admin_login_screen.dart';
+import 'features/pos/pos_home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -87,8 +88,11 @@ class AdminAuthGate extends StatelessWidget {
               if (role == UserRole.admin) {
                 return const AdminDashboard();
               }
+              if (role == UserRole.pos) {
+                return const PosHomeScreen();
+              }
 
-              // Nếu là tài khoản POS hoặc không phải ADMIN:
+              // Nếu là tài khoản không có quyền:
               return AccessDeniedScreen(userEmail: user.email ?? '');
             },
           );
@@ -159,11 +163,11 @@ class AccessDeniedScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Tài khoản "$userEmail" được phân quyền là Thu Ngân (POS) dành cho Ba Mẹ bán hàng trên máy Android.\n\nChỉ tài khoản Quản Trị Viên (Admin) mới có quyền truy cập Bảng Quản Trị này.',
+                    'Tài khoản "$userEmail" chưa được cấp quyền sử dụng hệ thống.\n\nVui lòng liên hệ Quản Trị Viên để được cấp tài khoản và phân quyền.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.7),
-                      fontSize: 13,
+                      fontSize: 14,
                       height: 1.5,
                     ),
                   ),

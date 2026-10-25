@@ -235,7 +235,7 @@ class _AccountManagerScreenState extends State<AccountManagerScreen> {
 
                     // Role selector
                     DropdownButtonFormField<String>(
-                      value: _selectedRole,
+                      initialValue: _selectedRole,
                       decoration: InputDecoration(
                         labelText: 'Phân quyền vai trò',
                         prefixIcon: const Icon(Icons.badge_outlined, size: 20),

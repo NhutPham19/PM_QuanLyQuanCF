@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/utils/money_format.dart';
@@ -60,17 +61,28 @@ class _PosHomeScreenState extends State<PosHomeScreen> {
             ),
           ],
         ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 16),
+        actions: [
+          const Padding(
+            padding: EdgeInsets.only(right: 8),
             child: Center(child: SyncIndicator()),
           ),
+          IconButton(
+            icon: const Icon(Icons.logout_rounded, color: AppColors.textMuted),
+            tooltip: 'Đăng xuất',
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+            },
+          ),
+          const SizedBox(width: 8),
         ],
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-          child: Column(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 600),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+              child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // 1. NÚT BÁN HÀNG (MÀU XANH LÁ)
@@ -167,7 +179,9 @@ class _PosHomeScreenState extends State<PosHomeScreen> {
           ),
         ),
       ),
-    );
+    ),
+  ),
+);
   }
 
   Widget _buildBigNavButton({

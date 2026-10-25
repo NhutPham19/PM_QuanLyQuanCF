@@ -33,7 +33,10 @@ class DailySummaryScreen extends StatelessWidget {
         ),
       ),
       body: SafeArea(
-        child: StreamBuilder<DailySummaryModel>(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 600),
+            child: StreamBuilder<DailySummaryModel>(
           stream: summaryRepo.getDailySummaryStream(todayString),
           builder: (context, snapshot) {
             final summary = snapshot.data ??
@@ -197,6 +200,8 @@ class DailySummaryScreen extends StatelessWidget {
           },
         ),
       ),
-    );
+    ),
+  ),
+);
   }
 }

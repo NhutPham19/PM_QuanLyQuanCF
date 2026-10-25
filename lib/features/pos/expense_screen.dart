@@ -314,9 +314,13 @@ class _ExpenseScreenState extends State<ExpenseScreen> with SingleTickerProvider
           ],
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 650),
+            child: TabBarView(
+              controller: _tabController,
+              children: [
           // TAB 1: NHẬP THÊM HÀNG BÁN (TỒN KHO)
           StreamBuilder<List<ProductModel>>(
             stream: _productRepo.getActiveProductsStream(),
@@ -494,6 +498,9 @@ class _ExpenseScreenState extends State<ExpenseScreen> with SingleTickerProvider
           ),
         ],
       ),
+    ),
+  ),
+),
     );
   }
 }
