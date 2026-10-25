@@ -1,33 +1,58 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Coffee, Lock, Mail, Eye, EyeOff } from "lucide-react";
+import { useAuth } from "../auth/AuthProvider";
 
-interface LoginPageProps {
-  onLogin?: (email: string, pass: string) => Promise<void>;
-}
+export const LoginPage: React.FC = () => {
+  const { login, user, role } = useAuth();
+  const navigate = useNavigate();
 
-export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Nếu đã đăng nhập với quyền admin thì chuyển thẳng về trang chủ
+  React.useEffect(() => {
+    if (user && role === "admin") {
+      navigate("/", { replace: true });
+    }
+  }, [user, role, navigate]);
+
+  const parseFirebaseError = (err: unknown): string => {
+    const code = (err as { code?: string })?.code;
+    switch (code) {
+      case "auth/invalid-credential":
+      case "auth/wrong-password":
+      case "auth/user-not-found":
+        return "Email hoặc mật khẩu không chính xác!";
+      case "auth/invalid-email":
+        return "Định dạng email không hợp lệ!";
+      case "auth/too-many-requests":
+        return "Quá nhiều lần thử thất bại. Vui lòng thử lại sau ít phút!";
+      case "auth/network-request-failed":
+        return "Lỗi kết nối mạng. Vui lòng kiểm tra lại đường truyền internet!";
+      default:
+        return (err as Error)?.message || "Đăng nhập thất bại. Vui lòng thử lại!";
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    if (!email || !password) {
+
+    if (!email.trim() || !password.trim()) {
       setError("Vui lòng nhập đầy đủ Email và Mật khẩu!");
       return;
     }
 
     try {
       setLoading(true);
-      if (onLogin) {
-        await onLogin(email, password);
-      }
+      await login(email, password);
+      navigate("/", { replace: true });
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err);
-      setError(msg || "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin!");
+      setError(parseFirebaseError(err));
     } finally {
       setLoading(false);
     }
@@ -105,7 +130,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
         </form>
 
         <p className="text-center text-xs text-slate-500 mt-6 font-medium">
-          Hệ thống nội bộ khép kín • Chỉ dành cho Quản trị viên
+          Hệ thống nội bộ khép kín • Dành riêng cho Quản trị viên
         </p>
       </div>
     </div>
