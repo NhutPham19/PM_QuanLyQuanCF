@@ -80,6 +80,8 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
         return 'Định dạng email không hợp lệ!';
       case 'network-request-failed':
         return 'Lỗi kết nối mạng, vui lòng kiểm tra đường truyền!';
+      case 'operation-not-allowed':
+        return 'Chưa bật Đăng nhập Email trên Firebase Console. Vui lòng vào Firebase Console > Authentication > Sign-in method và Bật "Email/Password"!';
       default:
         return originalMessage ?? 'Đăng nhập thất bại. Vui lòng thử lại!';
     }
