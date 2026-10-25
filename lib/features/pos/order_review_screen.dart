@@ -81,16 +81,6 @@ class _OrderReviewScreenState extends State<OrderReviewScreen> {
     }
   }
 
-  void _removeItem(int index) {
-    if (_isSubmitting) return;
-    setState(() {
-      _currentItems.removeAt(index);
-    });
-    if (_currentItems.isEmpty) {
-      Navigator.pop(context, false);
-    }
-  }
-
   Future<void> _handleCompleteOrder() async {
     if (_isSubmitting || _currentItems.isEmpty) return;
 

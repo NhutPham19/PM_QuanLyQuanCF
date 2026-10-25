@@ -237,8 +237,7 @@ class _PosHomeScreenState extends State<PosHomeScreen> {
             ),
             const SizedBox(height: 6),
             Text(
-              'Gồm ${order.items.length} món: ' +
-                  order.items.map((i) => '${i.quantity}x ${i.name}').join(', '),
+              'Gồm ${order.items.length} món: ${order.items.map((i) => '${i.quantity}x ${i.name}').join(', ')}',
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 12),

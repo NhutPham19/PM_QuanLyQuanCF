@@ -48,7 +48,7 @@ class SeniorTheme {
           color: AppColors.textMain,
         ),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.cardBg,
         elevation: 2,
         shape: RoundedRectangleBorder(

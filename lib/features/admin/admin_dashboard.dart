@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../core/constants/app_colors.dart';
 import '../../core/utils/money_format.dart';
 import '../../core/utils/vn_date.dart';
 import '../../data/models/daily_summary_model.dart';
