@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId = "com.familycoffee.pm_quanlyquancf"
-        minSdk = 21
+        minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

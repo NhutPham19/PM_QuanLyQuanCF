@@ -44,5 +44,7 @@ migrate_working_dir/
 **/ios/Runner/GoogleService-Info.plist
 *.keystore
 *.jks
+*.apk
+*.zip
 service-account-key.json
 node_modules/
