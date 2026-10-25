@@ -34,7 +34,6 @@ class AdminApp extends StatelessWidget {
         useMaterial3: true,
         brightness: Brightness.light,
         scaffoldBackgroundColor: const Color(0xFFF8FAFC),
-        fontFamily: '-apple-system',
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF4F46E5),
           primary: const Color(0xFF4F46E5),
@@ -46,13 +45,22 @@ class AdminApp extends StatelessWidget {
   }
 }
 
-class AdminAuthGate extends StatelessWidget {
+class AdminAuthGate extends StatefulWidget {
   const AdminAuthGate({super.key});
+
+  @override
+  State<AdminAuthGate> createState() => _AdminAuthGateState();
+}
+
+class _AdminAuthGateState extends State<AdminAuthGate> {
+  final _authRepo = AuthRepository();
+  String? _cachedUserId;
+  Future<UserRole>? _roleFuture;
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
+      stream: _authRepo.authStateChanges,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
@@ -72,8 +80,13 @@ class AdminAuthGate extends StatelessWidget {
 
         final user = snapshot.data;
         if (user != null) {
+          if (_cachedUserId != user.uid || _roleFuture == null) {
+            _cachedUserId = user.uid;
+            _roleFuture = _authRepo.getUserRole();
+          }
+
           return FutureBuilder<UserRole>(
-            future: AuthRepository().getUserRole(),
+            future: _roleFuture,
             builder: (context, roleSnapshot) {
               if (roleSnapshot.connectionState == ConnectionState.waiting) {
                 return const Scaffold(
@@ -98,6 +111,8 @@ class AdminAuthGate extends StatelessWidget {
           );
         }
 
+        _cachedUserId = null;
+        _roleFuture = null;
         return const AdminLoginScreen();
       },
     );

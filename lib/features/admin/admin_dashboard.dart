@@ -45,7 +45,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
             child: Container(
               color: const Color(0xFFF8FAFC),
               child: CustomScrollView(
-                physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                physics: const AlwaysScrollableScrollPhysics(),
                 slivers: [
             // 1. APPLE STYLE APP BAR
             SliverToBoxAdapter(
