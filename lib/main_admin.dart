@@ -26,12 +26,14 @@ class AdminApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF4338CA),
-          primary: const Color(0xFF4338CA),
-        ),
+        brightness: Brightness.light,
         scaffoldBackgroundColor: const Color(0xFFF8FAFC),
-        fontFamily: 'Roboto',
+        fontFamily: '-apple-system',
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF4F46E5),
+          primary: const Color(0xFF4F46E5),
+          surface: Colors.white,
+        ),
       ),
       home: const AdminDashboard(),
     );
