@@ -10,7 +10,7 @@ class AdminLoginScreen extends StatefulWidget {
 
 class _AdminLoginScreenState extends State<AdminLoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController(text: 'admin@quanlycf.com');
+  final _emailController = TextEditingController(text: 'admin@gmail.com');
   final _passwordController = TextEditingController();
 
   bool _isLoading = false;

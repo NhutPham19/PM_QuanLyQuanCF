@@ -47,4 +47,5 @@ migrate_working_dir/
 *.apk
 *.zip
 service-account-key.json
+.firebase/
 node_modules/

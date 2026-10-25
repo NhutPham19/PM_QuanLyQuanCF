@@ -49,7 +49,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             // Fallback theo email hệ thống
             const email = currentUser.email?.toLowerCase().trim() ?? "";
             const isSystemAdmin =
-              email === "admin@quanlycf.com" || email.includes("admin");
+              email === "admin@gmail.com" ||
+              email === "admin@quanlycf.com" ||
+              email.includes("admin");
             const assignedRole: UserRole = isSystemAdmin ? "admin" : "staff";
             setRole(assignedRole);
 

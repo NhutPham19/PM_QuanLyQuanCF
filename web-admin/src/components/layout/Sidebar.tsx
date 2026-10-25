@@ -11,6 +11,7 @@ import {
   Users,
   LogOut,
   Coffee as CoffeeIcon,
+  ShoppingBag,
 } from "lucide-react";
 
 interface NavItem {
@@ -20,6 +21,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
+  { to: "/pos", label: "Máy Bán Hàng (POS)", icon: ShoppingBag },
   { to: "/", label: "Tổng Quan", icon: LayoutDashboard },
   { to: "/products", label: "Món Ăn & Giá", icon: Coffee },
   { to: "/categories", label: "Danh Mục & Chi", icon: FolderTree },

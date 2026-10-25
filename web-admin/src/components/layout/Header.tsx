@@ -1,5 +1,6 @@
 import React from "react";
-import { Menu, Coffee } from "lucide-react";
+import { Menu, Coffee, ShoppingBag } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface HeaderProps {
   userEmail?: string | null;
@@ -34,15 +35,23 @@ export const Header: React.FC<HeaderProps> = ({ userEmail, onOpenMobileMenu }) =
         </div>
       </div>
 
-      {/* Online Status & Admin Avatar */}
-      <div className="flex items-center space-x-3">
-        <div className="flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200/60">
+      {/* Nút Chuyển Sang Máy Bán Hàng & Online Status */}
+      <div className="flex items-center space-x-2.5">
+        <Link
+          to="/pos"
+          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black shadow-sm transition-all active:scale-95"
+        >
+          <ShoppingBag className="w-4 h-4" />
+          <span>Máy Bán Hàng</span>
+        </Link>
+
+        <div className="hidden sm:flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200/60">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           <span>Trực tuyến</span>
         </div>
 
         {userEmail && (
-          <span className="hidden sm:inline-block text-xs font-semibold text-slate-600 max-w-[160px] truncate">
+          <span className="hidden md:inline-block text-xs font-semibold text-slate-600 max-w-[160px] truncate">
             {userEmail}
           </span>
         )}

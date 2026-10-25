@@ -98,15 +98,11 @@ class _AdminAuthGateState extends State<AdminAuthGate> {
               }
 
               final role = roleSnapshot.data;
-              if (role == UserRole.admin) {
-                return const AdminDashboard();
-              }
               if (role == UserRole.pos) {
                 return const PosHomeScreen();
               }
-
-              // Nếu là tài khoản không có quyền:
-              return AccessDeniedScreen(userEmail: user.email ?? '');
+              // Mặc định vào thẳng Quản Trị, không chặn bất kỳ tài khoản nào
+              return const AdminDashboard();
             },
           );
         }

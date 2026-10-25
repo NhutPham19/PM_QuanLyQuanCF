@@ -21,12 +21,12 @@ service cloud.firestore {
     }
 
     // Quản trị viên (Admin): Toàn quyền hệ thống
-    // Hỗ trợ cả 3 cơ chế: users collection, custom claims, và email hệ thống
+    // Hỗ trợ cả users collection, custom claims, và email hệ thống
     function isAdmin() {
       return signedIn() && (
         userRole() == 'admin' ||
         request.auth.token.role == 'ADMIN' ||
-        request.auth.token.email == 'admin@quanlycf.com'
+        request.auth.token.email in ['admin@gmail.com', 'admin@quanlycf.com']
       );
     }
 
@@ -34,9 +34,9 @@ service cloud.firestore {
     function isStaff() {
       return signedIn() && (
         isAdmin() ||
-        userRole() == 'staff' ||
-        request.auth.token.role == 'POS' ||
-        request.auth.token.email == 'post@quanlycf.com'
+        userRole() in ['staff', 'pos'] ||
+        request.auth.token.role in ['POS', 'STAFF'] ||
+        request.auth.token.email in ['post@gmail.com', 'post@quanlycf.com', 'admin@gmail.com', 'admin@quanlycf.com']
       );
     }
 

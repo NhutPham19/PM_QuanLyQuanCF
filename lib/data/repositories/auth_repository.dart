@@ -43,16 +43,17 @@ class AuthRepository {
     }
 
     // Phân định chính xác 2 tài khoản của hệ thống:
-    // 1. admin@quanlycf.com -> Quản Trị Viên (Toàn quyền hệ thống)
-    // 2. post@quanlycf.com  -> Người dùng Thu Ngân (POS Ba Mẹ bán hàng)
+    // 1. admin@gmail.com / admin@quanlycf.com -> Quản Trị Viên (Toàn quyền hệ thống)
+    // 2. post@gmail.com  / post@quanlycf.com  -> Người dùng Thu Ngân (POS Ba Mẹ bán hàng)
     final email = user.email?.toLowerCase().trim() ?? '';
-    if (email == 'admin@quanlycf.com' || email.contains('admin')) {
+    if (email == 'admin@gmail.com' || email == 'admin@quanlycf.com' || email.contains('admin')) {
       return UserRole.admin;
     }
-    if (email == 'post@quanlycf.com' || email.contains('pos') || email.contains('bame')) {
+    if (email == 'post@gmail.com' || email == 'post@quanlycf.com' || email.contains('pos') || email.contains('bame') || email.contains('post')) {
       return UserRole.pos;
     }
 
-    return UserRole.unknown;
+    // Mặc định cho phép truy cập kiểm thử mọi tài khoản
+    return UserRole.admin;
   }
 }

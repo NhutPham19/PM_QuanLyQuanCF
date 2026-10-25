@@ -17,6 +17,7 @@ import {
   TrendingDown,
   Minus,
   Sparkles,
+  ShoppingBag,
 } from "lucide-react";
 
 // Lazy-load Recharts để đạt ngân sách hiệu năng nhẹ dưới 250KB
@@ -246,6 +247,34 @@ export const DashboardPage: React.FC = () => {
 
       {/* Lưới Thẻ Điều Hướng Nhanh Bento */}
       <div>
+        {/* Nút Vào Máy Bán Hàng Nổi Bật */}
+        <div className="mb-4">
+          <Link
+            to="/pos"
+            className="group rounded-3xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 p-5 md:p-6 text-white shadow-lg shadow-emerald-600/20 hover:shadow-xl hover:shadow-emerald-600/30 transition-all duration-200 flex items-center justify-between"
+          >
+            <div className="flex items-center space-x-3.5 sm:space-x-4">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white group-hover:scale-110 transition-transform flex-shrink-0">
+                <ShoppingBag className="w-6 h-6 sm:w-7 sm:h-7" />
+              </div>
+              <div>
+                <span className="inline-block px-2.5 py-0.5 rounded-full bg-white/20 text-[10px] font-black uppercase tracking-wider mb-1">
+                  Mở Trực Tiếp Trên Trình Duyệt
+                </span>
+                <h3 className="text-base sm:text-xl font-black text-white">
+                  Giao Diện Máy Bán Hàng (POS)
+                </h3>
+                <p className="text-xs text-emerald-100 font-medium line-clamp-1">
+                  Hình ảnh món to rõ, chọn món Tại quán & Mang về, thanh toán 1 chạm
+                </p>
+              </div>
+            </div>
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-white/20 flex items-center justify-center text-white group-hover:translate-x-1 transition-transform flex-shrink-0">
+              <ArrowRight className="w-5 h-5" />
+            </div>
+          </Link>
+        </div>
+
         <h2 className="text-sm font-extrabold uppercase tracking-wider text-slate-500 mb-3">
           Phân Hệ Quản Trị
         </h2>

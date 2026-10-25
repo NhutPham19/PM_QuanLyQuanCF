@@ -11,6 +11,7 @@ import {
   FileSpreadsheet,
   Users,
   LogOut,
+  ShoppingBag,
 } from "lucide-react";
 
 interface MobileMenuDrawerProps {
@@ -21,6 +22,7 @@ interface MobileMenuDrawerProps {
 }
 
 const allNavItems = [
+  { to: "/pos", label: "Máy Bán Hàng (POS)", icon: ShoppingBag },
   { to: "/", label: "Tổng Quan Doanh Thu", icon: LayoutDashboard },
   { to: "/products", label: "Quản Lý Món Ăn & Giá", icon: Coffee },
   { to: "/categories", label: "Danh Mục & Loại Chi", icon: FolderTree },

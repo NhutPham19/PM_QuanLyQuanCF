@@ -58,44 +58,47 @@ class ProductCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // PHẦN TRÊN: ẢNH HOẶC ICON
+                  // PHẦN TRÊN: ẢNH HOẶC ICON (HÌNH ẢNH TO HƠN, RÕ NÉT)
                   Expanded(
                     child: Center(
                       child: product.imageUrl != null && product.imageUrl!.isNotEmpty
                           ? ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: CachedNetworkImage(
-                                imageUrl: product.imageUrl!,
-                                fit: BoxFit.cover,
-                                memCacheWidth: 200,
-                                placeholder: (context, url) => Container(
-                                  color: AppColors.bgLight,
-                                  child: Center(
-                                    child: Text(
-                                      product.icon,
-                                      style: const TextStyle(fontSize: 40),
+                              borderRadius: BorderRadius.circular(14),
+                              child: AspectRatio(
+                                aspectRatio: 1.05,
+                                child: CachedNetworkImage(
+                                  imageUrl: product.imageUrl!,
+                                  fit: BoxFit.cover,
+                                  memCacheWidth: 350,
+                                  placeholder: (context, url) => Container(
+                                    color: AppColors.bgLight,
+                                    child: Center(
+                                      child: Text(
+                                        product.icon,
+                                        style: const TextStyle(fontSize: 48),
+                                      ),
                                     ),
                                   ),
-                                ),
-                                errorWidget: (context, url, error) => Center(
-                                  child: Text(
-                                    product.icon,
-                                    style: const TextStyle(fontSize: 40),
+                                  errorWidget: (context, url, error) => Center(
+                                    child: Text(
+                                      product.icon,
+                                      style: const TextStyle(fontSize: 48),
+                                    ),
                                   ),
                                 ),
                               ),
                             )
                           : Container(
-                              width: 64,
-                              height: 64,
+                              width: 82,
+                              height: 82,
                               decoration: BoxDecoration(
                                 color: AppColors.bgLight,
-                                borderRadius: BorderRadius.circular(14),
+                                borderRadius: BorderRadius.circular(18),
                               ),
                               child: Center(
                                 child: Text(
                                   product.icon,
-                                  style: const TextStyle(fontSize: 36),
+                                  style: const TextStyle(fontSize: 48),
                                 ),
                               ),
                             ),

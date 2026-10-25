@@ -30,6 +30,9 @@ const ExportPage = lazy(() =>
 const StaffPage = lazy(() =>
   import("./pages/StaffPage").then((m) => ({ default: m.StaffPage }))
 );
+const PosPage = lazy(() =>
+  import("./pages/PosPage").then((m) => ({ default: m.PosPage }))
+);
 const LoginPage = lazy(() =>
   import("./pages/LoginPage").then((m) => ({ default: m.LoginPage }))
 );
@@ -70,6 +73,16 @@ export const App: React.FC = () => {
               <Route path="export" element={<ExportPage />} />
               <Route path="staff" element={<StaffPage />} />
             </Route>
+
+            {/* Máy Bán Hàng POS Trực Tuyến */}
+            <Route
+              path="/pos"
+              element={
+                <RequireAdmin>
+                  <PosPage />
+                </RequireAdmin>
+              }
+            />
 
             {/* Public Login Route */}
             <Route path="/login" element={<LoginPage />} />

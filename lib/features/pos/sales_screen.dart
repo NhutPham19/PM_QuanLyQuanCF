@@ -283,7 +283,7 @@ class _SalesScreenState extends State<SalesScreen> {
                     padding: const EdgeInsets.fromLTRB(14, 14, 14, 90),
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      childAspectRatio: 0.82,
+                      childAspectRatio: 0.74,
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
                     ),

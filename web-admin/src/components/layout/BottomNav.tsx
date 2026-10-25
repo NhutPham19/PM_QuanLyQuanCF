@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Coffee, Receipt, BarChart3, MoreHorizontal } from "lucide-react";
+import { LayoutDashboard, Coffee, Receipt, ShoppingBag, MoreHorizontal } from "lucide-react";
 
 interface BottomNavProps {
   onOpenMobileMenu: () => void;
@@ -21,6 +21,22 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onOpenMobileMenu }) => {
         >
           <LayoutDashboard className="w-5 h-5 mb-0.5" />
           <span>Tổng quan</span>
+        </NavLink>
+
+        <NavLink
+          to="/pos"
+          className={({ isActive }) =>
+            `flex flex-col items-center justify-center min-w-[56px] min-h-[48px] py-1 rounded-xl text-[11px] font-bold transition-all ${
+              isActive
+                ? "text-emerald-600 font-black"
+                : "text-emerald-700 hover:text-emerald-800"
+            }`
+          }
+        >
+          <div className="w-7 h-7 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-700 shadow-sm mb-0.5">
+            <ShoppingBag className="w-4 h-4" />
+          </div>
+          <span>Bán hàng</span>
         </NavLink>
 
         <NavLink
@@ -45,18 +61,6 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onOpenMobileMenu }) => {
         >
           <Receipt className="w-5 h-5 mb-0.5" />
           <span>Đơn hàng</span>
-        </NavLink>
-
-        <NavLink
-          to="/reports"
-          className={({ isActive }) =>
-            `flex flex-col items-center justify-center min-w-[56px] min-h-[48px] py-1 rounded-xl text-[11px] font-semibold transition-colors ${
-              isActive ? "text-indigo-600" : "text-slate-500 hover:text-slate-900"
-            }`
-          }
-        >
-          <BarChart3 className="w-5 h-5 mb-0.5" />
-          <span>Báo cáo</span>
         </NavLink>
 
         <button
