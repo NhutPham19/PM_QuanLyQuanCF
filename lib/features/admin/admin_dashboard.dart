@@ -70,7 +70,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                             ],
                           ),
                           child: const Center(
-                            child: Text('👑', style: TextStyle(fontSize: 22)),
+                            child: Icon(Icons.workspace_premium_rounded, color: Colors.white, size: 26),
                           ),
                         ),
                         const SizedBox(width: 14),
@@ -87,7 +87,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                             ),
                             SizedBox(height: 2),
                             Text(
-                              'Cà Phê Gia Đình ☕',
+                              'Cà Phê Gia Đình',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w900,
@@ -226,7 +226,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                   children: [
                                     const Row(
                                       children: [
-                                        Text('⚡', style: TextStyle(fontSize: 16)),
+                                        Icon(Icons.bolt_rounded, color: Color(0xFFFBBF24), size: 18),
                                         SizedBox(width: 6),
                                         Text(
                                           'DOANH THU HÔM NAY',
@@ -324,7 +324,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            const SliverToBoxAdapter(child: SizedBox(height: 24)),
 
             // 3. TIÊU ĐỀ KHU VỰC QUẢN TRỊ
             const SliverToBoxAdapter(
@@ -354,7 +354,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 ),
               ),
             ),
-            const SizedBox(height: 12),
+            const SliverToBoxAdapter(child: SizedBox(height: 12)),
 
             // 4. LƯỚI BENTO CARDS 2 CỘT CHUẨN APPLE WIDGET
             SliverPadding(
@@ -373,7 +373,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     builder: (context, snapshot) {
                       final count = snapshot.data?.length ?? 0;
                       return _buildBentoCard(
-                        iconEmoji: '☕',
+                        icon: Icons.local_cafe_rounded,
                         gradientColors: const [Color(0xFF0284C7), Color(0xFF0369A1)],
                         title: 'Món Ăn & Giá',
                         subtitle: 'Quản lý 2 giá Tại quán / Mang về',
@@ -390,7 +390,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
                   // THẺ 2: DANH MỤC & LOẠI CHI
                   _buildBentoCard(
-                    iconEmoji: '📑',
+                    icon: Icons.category_rounded,
                     gradientColors: const [Color(0xFF0D9488), Color(0xFF0F766E)],
                     title: 'Danh Mục & Chi',
                     subtitle: 'Nhóm đồ uống và các nút chi quán',
@@ -405,7 +405,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
                   // THẺ 3: LỊCH SỬ ĐƠN HÀNG
                   _buildBentoCard(
-                    iconEmoji: '🧾',
+                    icon: Icons.receipt_long_rounded,
                     gradientColors: const [Color(0xFFEA580C), Color(0xFFC2410C)],
                     title: 'Lịch Sử Đơn',
                     subtitle: 'Xem đơn bán, nút Hủy / Khôi phục',
@@ -420,7 +420,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
                   // THẺ 4: BÁO CÁO DOANH THU
                   _buildBentoCard(
-                    iconEmoji: '📈',
+                    icon: Icons.insights_rounded,
                     gradientColors: const [Color(0xFF16A34A), Color(0xFF15803D)],
                     title: 'Báo Cáo Tháng',
                     subtitle: 'Biểu đồ dòng tiền và đối soát ngày',
@@ -472,7 +472,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                             borderRadius: BorderRadius.circular(14),
                           ),
                           child: const Center(
-                            child: Text('💾', style: TextStyle(fontSize: 24)),
+                            child: Icon(Icons.table_chart_rounded, color: Color(0xFF4F46E5), size: 24),
                           ),
                         ),
                         const SizedBox(width: 14),
@@ -545,7 +545,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
   }
 
   Widget _buildBentoCard({
-    required String iconEmoji,
+    required IconData icon,
     required List<Color> gradientColors,
     required String title,
     required String subtitle,
@@ -595,7 +595,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     ],
                   ),
                   child: Center(
-                    child: Text(iconEmoji, style: const TextStyle(fontSize: 22)),
+                    child: Icon(icon, color: Colors.white, size: 22),
                   ),
                 ),
                 Container(
