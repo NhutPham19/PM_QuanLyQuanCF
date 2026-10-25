@@ -6,6 +6,7 @@ import '../../data/models/daily_summary_model.dart';
 import '../../data/models/product_model.dart';
 import '../../data/repositories/product_repository.dart';
 import '../../data/repositories/summary_repository.dart';
+import 'account_manager_screen.dart';
 import 'category_manager.dart';
 import 'export_csv_screen.dart';
 import 'orders_history.dart';
@@ -441,7 +442,78 @@ class _AdminDashboardState extends State<AdminDashboard> {
               ),
             ),
 
-            // 5. THẺ FULL-WIDTH: XUẤT CSV & ĐỐI SOÁT
+            // 5. THẺ FULL-WIDTH: PHÂN QUYỀN & CẤP TÀI KHOẢN (CHỈ ADMIN)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(18, 0, 18, 14),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const AccountManagerScreen()),
+                    );
+                  },
+                  borderRadius: BorderRadius.circular(22),
+                  child: Container(
+                    padding: const EdgeInsets.all(18),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(22),
+                      border: Border.all(color: const Color(0xFFE2E8F0), width: 1.2),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.04),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFECFDF5),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: const Center(
+                            child: Icon(Icons.manage_accounts_rounded, color: Color(0xFF059669), size: 26),
+                          ),
+                        ),
+                        const SizedBox(width: 14),
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Phân Quyền & Cấp Tài Khoản',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w800,
+                                  color: Color(0xFF0F172A),
+                                ),
+                              ),
+                              SizedBox(height: 2),
+                              Text(
+                                'Chỉ Admin toàn quyền, cấp tài khoản cho Thu Ngân (Ba Mẹ)',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Color(0xFF64748B),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Icon(Icons.arrow_forward_ios_rounded, size: 18, color: Color(0xFF94A3B8)),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            // 6. THẺ FULL-WIDTH: XUẤT CSV & ĐỐI SOÁT
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(18, 0, 18, 40),

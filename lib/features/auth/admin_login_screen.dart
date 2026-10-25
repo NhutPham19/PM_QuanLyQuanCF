@@ -13,7 +13,6 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
   final _emailController = TextEditingController(text: 'admin@quanlycf.com');
   final _passwordController = TextEditingController();
 
-  bool _isLoginMode = true;
   bool _isLoading = false;
   bool _obscurePassword = true;
   String? _errorMessage;
@@ -37,17 +36,10 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
 
-      if (_isLoginMode) {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
-      } else {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
-      }
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
     } on FirebaseAuthException catch (e) {
       setState(() {
         _errorMessage = _getVietnameseErrorMessage(e.code, e.message);
@@ -206,75 +198,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        const SizedBox(height: 26),
-
-                        // Chuyển đổi Đăng nhập / Đăng ký
-                        Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF0F172A),
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      _isLoginMode = true;
-                                      _errorMessage = null;
-                                    });
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(vertical: 10),
-                                    decoration: BoxDecoration(
-                                      color: _isLoginMode ? const Color(0xFF4F46E5) : Colors.transparent,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'Đăng Nhập',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: _isLoginMode ? FontWeight.w800 : FontWeight.w500,
-                                          fontSize: 13,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      _isLoginMode = false;
-                                      _errorMessage = null;
-                                    });
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(vertical: 10),
-                                    decoration: BoxDecoration(
-                                      color: !_isLoginMode ? const Color(0xFF4F46E5) : Colors.transparent,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'Tạo Tài Khoản Mới',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: !_isLoginMode ? FontWeight.w800 : FontWeight.w500,
-                                          fontSize: 13,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 28),
 
                         // Thông báo lỗi nếu có
                         if (_errorMessage != null) ...[
@@ -431,9 +355,9 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                                       color: Colors.white,
                                     ),
                                   )
-                                : Text(
-                                    _isLoginMode ? 'Đăng Nhập Quản Trị' : 'Tạo Tài Khoản Admin',
-                                    style: const TextStyle(
+                                : const Text(
+                                    'Đăng Nhập Quản Trị',
+                                    style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w800,
                                       letterSpacing: 0.2,

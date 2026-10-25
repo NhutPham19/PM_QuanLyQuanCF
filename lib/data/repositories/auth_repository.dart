@@ -42,10 +42,17 @@ class AuthRepository {
       // Khi offline, nếu không lấy được token mới thì kiểm tra email hoặc fallback
     }
 
-    // Fallback: nếu email chứa admin thì là admin, ngược lại mặc định là POS
-    if (user.email?.toLowerCase().contains('admin') == true) {
+    // Phân định chính xác 2 tài khoản của hệ thống:
+    // 1. admin@quanlycf.com -> Quản Trị Viên (Toàn quyền hệ thống)
+    // 2. post@quanlycf.com  -> Người dùng Thu Ngân (POS Ba Mẹ bán hàng)
+    final email = user.email?.toLowerCase().trim() ?? '';
+    if (email == 'admin@quanlycf.com' || email.contains('admin')) {
       return UserRole.admin;
     }
-    return UserRole.pos;
+    if (email == 'post@quanlycf.com' || email.contains('pos') || email.contains('bame')) {
+      return UserRole.pos;
+    }
+
+    return UserRole.unknown;
   }
 }
