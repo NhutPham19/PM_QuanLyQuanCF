@@ -245,7 +245,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                           style: const TextStyle(color: Colors.white, fontSize: 14),
                           decoration: InputDecoration(
                             prefixIcon: const Icon(Icons.email_outlined, color: Color(0xFF94A3B8), size: 20),
-                            hintText: 'admin@quanlycf.com',
+                            hintText: 'admin@gmail.com',
                             hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.3)),
                             filled: true,
                             fillColor: const Color(0xFF0F172A),

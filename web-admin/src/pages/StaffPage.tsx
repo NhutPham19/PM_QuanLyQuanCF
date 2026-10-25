@@ -48,30 +48,35 @@ export const StaffPage: React.FC = () => {
         });
       });
 
-      // Đảm bảo luôn có 2 tài khoản hệ thống hiển thị
-      const hasAdmin = list.some((u) => u.email === "admin@quanlycf.com");
-      const hasPos = list.some((u) => u.email === "post@quanlycf.com");
+      // Chỉ giữ lại 2 tài khoản chính thức: admin@gmail.com và post@gmail.com
+      // Loại bỏ các tài khoản giả lập/cũ (@quanlycf.com) nếu có
+      const filteredList = list.filter(
+        (u) => !u.email.endsWith("@quanlycf.com")
+      );
+
+      const hasAdmin = filteredList.some((u) => u.email === "admin@gmail.com");
+      const hasPos = filteredList.some((u) => u.email === "post@gmail.com");
 
       if (!hasAdmin) {
-        list.unshift({
+        filteredList.unshift({
           uid: "system_admin",
-          email: "admin@quanlycf.com",
+          email: "admin@gmail.com",
           role: "admin",
           active: true,
           createdAt: "Tài khoản Quản trị gốc",
         });
       }
       if (!hasPos) {
-        list.push({
+        filteredList.push({
           uid: "system_pos",
-          email: "post@quanlycf.com",
+          email: "post@gmail.com",
           role: "staff",
           active: true,
           createdAt: "Tài khoản POS Ba Mẹ gốc",
         });
       }
 
-      setUserList(list);
+      setUserList(filteredList);
     } catch (err) {
       console.error("Lỗi tải danh sách tài khoản:", err);
     } finally {
@@ -315,7 +320,7 @@ export const StaffPage: React.FC = () => {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="ví dụ: bame@quanlycf.com"
+                    placeholder="ví dụ: bame@gmail.com"
                     className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold focus:outline-none focus:border-purple-500"
                   />
                 </div>

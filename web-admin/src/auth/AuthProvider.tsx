@@ -46,12 +46,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const data = snap.data();
             setRole((data.role as UserRole) ?? "staff");
           } else {
-            // Fallback theo email hệ thống
+            // Fallback theo email hệ thống: admin@gmail.com
             const email = currentUser.email?.toLowerCase().trim() ?? "";
             const isSystemAdmin =
-              email === "admin@gmail.com" ||
-              email === "admin@quanlycf.com" ||
-              email.includes("admin");
+              email === "admin@gmail.com" || email.includes("admin");
             const assignedRole: UserRole = isSystemAdmin ? "admin" : "staff";
             setRole(assignedRole);
 

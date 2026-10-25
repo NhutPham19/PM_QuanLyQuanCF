@@ -26,7 +26,7 @@ service cloud.firestore {
       return signedIn() && (
         userRole() == 'admin' ||
         request.auth.token.role == 'ADMIN' ||
-        request.auth.token.email in ['admin@gmail.com', 'admin@quanlycf.com']
+        request.auth.token.email == 'admin@gmail.com'
       );
     }
 
@@ -36,7 +36,7 @@ service cloud.firestore {
         isAdmin() ||
         userRole() in ['staff', 'pos'] ||
         request.auth.token.role in ['POS', 'STAFF'] ||
-        request.auth.token.email in ['post@gmail.com', 'post@quanlycf.com', 'admin@gmail.com', 'admin@quanlycf.com']
+        request.auth.token.email in ['post@gmail.com', 'admin@gmail.com']
       );
     }
 

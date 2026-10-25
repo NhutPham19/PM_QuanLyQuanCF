@@ -125,7 +125,7 @@ class _AccountManagerScreenState extends State<AccountManagerScreen> {
 
               // Tài khoản 1: ADMIN
               _buildAccountTile(
-                email: 'admin@quanlycf.com',
+                email: 'admin@gmail.com',
                 roleTitle: 'Quản Trị Viên (Admin - Con)',
                 roleSubtitle: 'Toàn quyền cấu hình món, sửa giá, xem báo cáo, xuất CSV',
                 badgeText: 'ADMIN',
@@ -138,9 +138,9 @@ class _AccountManagerScreenState extends State<AccountManagerScreen> {
 
               // Tài khoản 2: POS
               _buildAccountTile(
-                email: 'post@quanlycf.com',
+                email: 'post@gmail.com',
                 roleTitle: 'Người Dùng Thu Ngân (POS - Ba Mẹ)',
-                roleSubtitle: 'Bán hàng, tạo đơn, nhập chi phí, xem sổ tổng kết ngày. Không sửa giá, không vào Web Admin.',
+                roleSubtitle: 'Bán hàng, tạo đơn, nhập chi phí, xem sổ tổng kết ngày.',
                 badgeText: 'NGƯỜI DÙNG (POS)',
                 badgeColor: const Color(0xFF059669),
                 badgeBg: const Color(0xFFECFDF5),

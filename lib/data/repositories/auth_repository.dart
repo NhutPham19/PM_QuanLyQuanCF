@@ -42,14 +42,14 @@ class AuthRepository {
       // Khi offline, nếu không lấy được token mới thì kiểm tra email hoặc fallback
     }
 
-    // Phân định chính xác 2 tài khoản của hệ thống:
-    // 1. admin@gmail.com / admin@quanlycf.com -> Quản Trị Viên (Toàn quyền hệ thống)
-    // 2. post@gmail.com  / post@quanlycf.com  -> Người dùng Thu Ngân (POS Ba Mẹ bán hàng)
+    // Phân định chính xác 2 tài khoản duy nhất của hệ thống:
+    // 1. admin@gmail.com -> Quản Trị Viên (Toàn quyền hệ thống)
+    // 2. post@gmail.com  -> Thu Ngân POS (Ba Mẹ bán hàng)
     final email = user.email?.toLowerCase().trim() ?? '';
-    if (email == 'admin@gmail.com' || email == 'admin@quanlycf.com' || email.contains('admin')) {
+    if (email == 'admin@gmail.com' || email.contains('admin')) {
       return UserRole.admin;
     }
-    if (email == 'post@gmail.com' || email == 'post@quanlycf.com' || email.contains('pos') || email.contains('bame') || email.contains('post')) {
+    if (email == 'post@gmail.com' || email.contains('pos') || email.contains('post')) {
       return UserRole.pos;
     }
 
