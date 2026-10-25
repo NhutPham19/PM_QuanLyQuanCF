@@ -35,12 +35,17 @@ class _AdminDashboardState extends State<AdminDashboard> {
     final todayString = VnDateUtils.formatDateString(nowUtc);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: const Color(0xFFF1F5F9),
       body: SafeArea(
         bottom: false,
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-          slivers: [
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 580),
+            child: Container(
+              color: const Color(0xFFF8FAFC),
+              child: CustomScrollView(
+                physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                slivers: [
             // 1. APPLE STYLE APP BAR
             SliverToBoxAdapter(
               child: Padding(
@@ -364,7 +369,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   crossAxisCount: 2,
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 12,
-                  childAspectRatio: 0.95,
+                  childAspectRatio: 1.15,
                 ),
                 delegate: SliverChildListDelegate([
                   // THẺ 1: MÓN ĂN & ĐỒ UỐNG
@@ -509,7 +514,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
           ],
         ),
       ),
-    );
+    ),
+  ),
+),
+);
   }
 
   Widget _buildSubMetric({
