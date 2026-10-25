@@ -1,59 +1,121 @@
 rules_version = '2';
 service cloud.firestore {
-  match /databases/{db}/documents {
-    function signedIn() { return request.auth != null; }
-    function isAdmin()  {
+  match /databases/{database}/documents {
+
+    // ================= HELPER FUNCTIONS =================
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function userDoc() {
+      return /databases/$(database)/documents/users/$(request.auth.uid);
+    }
+
+    function hasUserDoc() {
+      return exists(userDoc());
+    }
+
+    function userRole() {
+      return hasUserDoc() ? get(userDoc()).data.role : '';
+    }
+
+    // Quản trị viên (Admin): Toàn quyền hệ thống
+    // Hỗ trợ cả 3 cơ chế: users collection, custom claims, và email hệ thống
+    function isAdmin() {
       return signedIn() && (
+        userRole() == 'admin' ||
         request.auth.token.role == 'ADMIN' ||
         request.auth.token.email == 'admin@quanlycf.com'
       );
     }
-    function isPos() {
+
+    // Nhân viên / Thu ngân (Staff / POS Ba Mẹ)
+    function isStaff() {
       return signedIn() && (
+        isAdmin() ||
+        userRole() == 'staff' ||
         request.auth.token.role == 'POS' ||
         request.auth.token.email == 'post@quanlycf.com'
       );
     }
 
-    // Danh mục & loại chi: Mọi tài khoản đăng nhập đều được đọc, chỉ Admin được tạo/sửa/xóa
-    match /categories/{id}         { allow read: if signedIn(); allow write: if isAdmin(); }
-    match /expense_categories/{id} { allow read: if signedIn(); allow write: if isAdmin(); }
+    // ================= 1. USERS & PHÂN QUYỀN =================
 
-    // Sản phẩm:
-    // - POS chỉ được cập nhật tồn kho (stockQuantity) và updatedAt
-    // - Chỉ Admin được tạo mới, xóa hoặc sửa giá, tên, danh mục
+    match /users/{uid} {
+      // Mỗi người dùng đọc được thông tin của chính mình; Admin đọc được toàn bộ
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      // Admin có quyền tạo/sửa thông tin nhân viên; Người dùng tự khởi tạo hồ sơ của mình lần đầu
+      allow write: if isAdmin() || (signedIn() && request.auth.uid == uid);
+    }
+
+    // ================= 2. SẢN PHẨM & DANH MỤC =================
+
+    // Danh mục đồ uống: Nhân viên được đọc, chỉ Admin được tạo/sửa/xóa
+    match /categories/{id} {
+      allow read: if isStaff();
+      allow write: if isAdmin();
+    }
+
+    // Loại chi phí quán (Đá, Ly, Chanh, Đường...): Nhân viên đọc, Admin quản lý
+    match /expense_categories/{id} {
+      allow read: if isStaff();
+      allow write: if isAdmin();
+    }
+
+    // Sản phẩm (Món ăn & Nước uống):
+    // - Nhân viên đọc danh sách món đang bán
+    // - Chỉ Admin được tạo mới, xóa mềm hoặc thay đổi giá (priceDineIn, priceTakeAway)
+    // - POS được cập nhật tồn kho (stockQuantity) và updatedAt khi bán hoặc nhập hàng
     match /products/{id} {
-      allow read: if signedIn();
+      allow read: if isStaff();
       allow create, delete: if isAdmin();
-      allow update: if isAdmin() || (isPos() &&
-        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['stockQuantity', 'updatedAt']));
+      allow update: if isAdmin() || (
+        isStaff() &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['stockQuantity', 'updatedAt'])
+      );
     }
 
-    // Đơn hàng:
-    // - Đăng nhập là tạo được đơn
+    // ================= 3. ĐƠN HÀNG (ORDERS) =================
+
+    // - Nhân viên & Admin đều đọc được lịch sử đơn
+    // - Bất kỳ nhân viên đăng nhập nào cũng tạo được đơn hàng
     // - POS chỉ được hủy đơn của chính mình tạo trong vòng 10 phút đầu
+    // - Admin có toàn quyền hủy hoặc khôi phục đơn
+    // - CẤM xóa cứng đơn hàng (bảo vệ toàn vẹn lịch sử doanh thu)
     match /orders/{id} {
-      allow read: if signedIn();
-      allow create: if signedIn();
-      allow update: if isAdmin() || (isPos()
-        && resource.data.createdBy == request.auth.uid
-        && request.time < resource.data.createdAt + duration.value(10, 'm')
-        && request.resource.data.status == 'VOIDED'
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'voidedAt', 'voidedBy']));
-      allow delete: if false; // Không xóa cứng đơn hàng
+      allow read: if isStaff();
+      allow create: if isStaff();
+      allow update: if isAdmin() || (
+        isStaff() &&
+        resource.data.createdBy == request.auth.uid &&
+        request.time < resource.data.createdAt + duration.value(10, 'm') &&
+        request.resource.data.status == 'VOIDED' &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'voidedAt', 'voidedBy'])
+      );
+      allow delete: if false;
     }
 
-    // Khoản chi / Nhập hàng:
+    // ================= 4. CHI PHÍ (EXPENSES) =================
+
+    // - Nhân viên tạo phiếu chi khi nhập hàng hoặc mua đá/đồ dùng
+    // - Chỉ Admin mới có quyền sửa hoặc xem toàn bộ danh mục chi
+    // - CẤM xóa cứng phiếu chi
     match /expenses/{id} {
-      allow read: if signedIn();
-      allow create: if signedIn();
+      allow read: if isStaff();
+      allow create: if isStaff();
       allow update: if isAdmin();
       allow delete: if false;
     }
 
-    // Sổ tổng kết ngày:
-    match /daily_summaries/{day} {
-      allow read, write: if signedIn();
+    // ================= 5. SỔ TỔNG KẾT NGÀY (DAILY SUMMARIES) =================
+
+    // - Mỗi ngày chỉ có 1 doc duy nhất với docId = YYYY-MM-DD
+    // - Admin đọc để xem báo cáo doanh thu
+    // - Cả POS lẫn Admin đều được ghi (atomic increment khi bán hàng hoặc nhập hàng)
+    match /daily_summaries/{dateString} {
+      allow read: if isStaff();
+      allow write: if isStaff();
     }
   }
 }
