@@ -13,7 +13,9 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-  } catch (_) {}
+  } catch (e) {
+    debugPrint('Firebase init error: $e');
+  }
 
   runApp(const ProviderScope(child: AdminApp()));
 }
@@ -59,6 +61,11 @@ class AdminAuthGate extends StatelessWidget {
               ),
             ),
           );
+        }
+
+        if (snapshot.hasError) {
+          debugPrint('AuthGate stream error: ${snapshot.error}');
+          return const AdminLoginScreen();
         }
 
         final user = snapshot.data;

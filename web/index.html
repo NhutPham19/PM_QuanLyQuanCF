@@ -40,16 +40,6 @@
   </style>
 </head>
 <body>
-  <script>
-    // Tu dong don dep service worker cu de cap nhat ngay lap tuc ban moi
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(function(registrations) {
-        for (let registration of registrations) {
-          registration.unregister();
-        }
-      });
-    }
-  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

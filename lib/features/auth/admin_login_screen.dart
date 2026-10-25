@@ -177,7 +177,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                               ],
                             ),
                             child: const Center(
-                              child: Text('☕', style: TextStyle(fontSize: 32)),
+                              child: Icon(Icons.coffee_rounded, color: Colors.white, size: 36),
                             ),
                           ),
                         ),
@@ -442,15 +442,24 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                         const SizedBox(height: 18),
 
                         // Gợi ý bảo mật
-                        Center(
-                          child: Text(
-                            '💡 Chỉ tài khoản Admin được cấp quyền truy cập hệ thống.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.lock_person_outlined,
                               color: Colors.white.withValues(alpha: 0.45),
-                              fontSize: 11,
+                              size: 14,
                             ),
-                          ),
+                            const SizedBox(width: 6),
+                            Text(
+                              'Chỉ tài khoản Admin được cấp quyền truy cập hệ thống.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.45),
+                                fontSize: 11,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
