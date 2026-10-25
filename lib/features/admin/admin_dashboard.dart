@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../core/utils/money_format.dart';
 import '../../core/utils/vn_date.dart';
 import '../../data/models/daily_summary_model.dart';
@@ -99,29 +100,64 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       ],
                     ),
 
-                    // Badge Trạng thái quán
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFDCFCE7),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: const Color(0xFF86EFAC), width: 1.2),
-                      ),
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text('●', style: TextStyle(color: Color(0xFF16A34A), fontSize: 10)),
-                          SizedBox(width: 5),
-                          Text(
-                            'Trực tuyến',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w800,
-                              color: Color(0xFF15803D),
-                            ),
+                    // Badge Trạng thái quán & Nút Đăng xuất
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFDCFCE7),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: const Color(0xFF86EFAC), width: 1.2),
                           ),
-                        ],
-                      ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text('●', style: TextStyle(color: Color(0xFF16A34A), fontSize: 10)),
+                              SizedBox(width: 5),
+                              Text(
+                                'Trực tuyến',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w800,
+                                  color: Color(0xFF15803D),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        IconButton(
+                          icon: const Icon(Icons.logout_rounded, color: Color(0xFF64748B), size: 22),
+                          tooltip: 'Đăng xuất',
+                          onPressed: () async {
+                            final confirm = await showDialog<bool>(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                title: const Text('Đăng xuất'),
+                                content: const Text('Bạn có chắc chắn muốn đăng xuất khỏi Bảng Quản trị?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(ctx, false),
+                                    child: const Text('Hủy'),
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFFEF4444),
+                                      foregroundColor: Colors.white,
+                                    ),
+                                    onPressed: () => Navigator.pop(ctx, true),
+                                    child: const Text('Đăng xuất'),
+                                  ),
+                                ],
+                              ),
+                            );
+                            if (confirm == true) {
+                              await FirebaseAuth.instance.signOut();
+                            }
+                          },
+                        ),
+                      ],
                     ),
                   ],
                 ),
