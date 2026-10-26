@@ -70,7 +70,11 @@ class ProductRepository {
       final list = snapshot.docs
           .map((doc) => ProductModel.fromMap(doc.data() as Map<String, dynamic>, doc.id))
           .toList();
-      list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+      list.sort((a, b) {
+        final catCompare = a.categoryId.compareTo(b.categoryId);
+        if (catCompare != 0) return catCompare;
+        return a.sortOrder.compareTo(b.sortOrder);
+      });
       return list;
     });
   }
@@ -81,7 +85,11 @@ class ProductRepository {
       final list = snapshot.docs
           .map((doc) => ProductModel.fromMap(doc.data(), doc.id))
           .toList();
-      list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+      list.sort((a, b) {
+        final catCompare = a.categoryId.compareTo(b.categoryId);
+        if (catCompare != 0) return catCompare;
+        return a.sortOrder.compareTo(b.sortOrder);
+      });
       return list;
     });
   }
@@ -157,7 +165,6 @@ class ProductRepository {
       const CategoryModel(id: 'cat_tu_pha', name: 'NƯỚC TỰ PHA', icon: '☕', orderIndex: 1),
       const CategoryModel(id: 'cat_nuoc_ngot', name: 'NƯỚC NGỌT', icon: '🥫', orderIndex: 2),
       const CategoryModel(id: 'cat_mia_cam_dua', name: 'MÍA / CAM / DỪA', icon: '🎋', orderIndex: 3),
-      const CategoryModel(id: 'cat_thuoc_la', name: 'THUỐC LÁ', icon: '🚬', orderIndex: 4),
     ];
     for (final c in categories) {
       batch.set(_firestore.collection('categories').doc(c.id), c.toMap());
@@ -268,30 +275,6 @@ class ProductRepository {
         unit: 'trái',
         trackStock: true,
         sortOrder: 3,
-      ),
-      const ProductModel(
-        id: 'prod_thuoc_jet_goi',
-        name: 'THUỐC JET (GÓI)',
-        categoryId: 'cat_thuoc_la',
-        icon: '🚬',
-        priceDineIn: 22000,
-        priceTakeAway: 22000,
-        stockQuantity: 20,
-        unit: 'gói',
-        unitsPerCase: 10,
-        trackStock: true,
-        sortOrder: 1,
-      ),
-      const ProductModel(
-        id: 'prod_thuoc_jet_dieu',
-        name: 'THUỐC JET (ĐIẾU)',
-        categoryId: 'cat_thuoc_la',
-        icon: '🚬',
-        priceDineIn: 2000,
-        priceTakeAway: 2000,
-        unit: 'điếu',
-        trackStock: false, // Bán lẻ không trừ kho
-        sortOrder: 2,
       ),
     ];
 

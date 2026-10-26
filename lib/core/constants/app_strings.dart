@@ -19,7 +19,6 @@ class AppStrings {
   static const String catTuPha = '☕ NƯỚC TỰ PHA';
   static const String catNuocNgot = '🥫 NƯỚC NGỌT';
   static const String catMiaCamDua = '🎋 MÍA / CAM / DỪA';
-  static const String catThuocLa = '🚬 THUỐC LÁ';
 
   // Nút thao tác
   static const String btnCompleteOrder = 'HOÀN TẤT & LƯU ĐƠN';

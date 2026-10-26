@@ -44,7 +44,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
           if (snap.exists()) {
             const data = snap.data();
-            setRole((data.role as UserRole) ?? "staff");
+            const currentRole = (data.role as UserRole) ?? "staff";
+            setRole(currentRole);
+            if (currentRole === "admin" || currentUser.email === "admin@gmail.com") {
+              import("../lib/retention").then(({ purgeOldHistory }) => {
+                purgeOldHistory(db, 45);
+              });
+            }
           } else {
             // Fallback theo email hệ thống: admin@gmail.com
             const email = currentUser.email?.toLowerCase().trim() ?? "";

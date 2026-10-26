@@ -226,10 +226,93 @@ export const PosPage: React.FC = () => {
     }
   };
 
+  // Hàm render Card món ăn dùng chung cho cả dạng Lưới và dạng Phân Nhóm
+  const renderProductCard = (product: Product) => {
+    const currentPrice = isDineIn
+      ? (product.priceDineIn ?? product.priceTakeAway ?? 0)
+      : (product.priceTakeAway ?? product.priceDineIn ?? 0);
+    const cartQty = cart.get(product.id)?.quantity ?? 0;
+    const isSelected = cartQty > 0;
+
+    return (
+      <div
+        key={product.id}
+        onClick={() => addToCart(product)}
+        className={`relative bg-white rounded-3xl overflow-hidden border cursor-pointer select-none transition-all duration-200 hover:shadow-lg active:scale-[0.97] flex flex-col ${
+          isSelected
+            ? "border-indigo-600 ring-2 ring-indigo-500/20 shadow-md"
+            : "border-slate-200 hover:border-slate-300 shadow-sm"
+        }`}
+      >
+        {/* BADGE SỐ LƯỢNG KHI ĐÃ CHỌN */}
+        {isSelected && (
+          <div className="absolute top-2.5 right-2.5 z-10 w-8 h-8 rounded-full bg-indigo-600 text-white font-black text-sm flex items-center justify-center shadow-lg shadow-indigo-600/40 animate-in zoom-in-75">
+            {cartQty}
+          </div>
+        )}
+
+        {/* HÌNH ẢNH MÓN HÀNG TO HƠN, RÕ NÉT */}
+        <div className="relative w-full h-36 sm:h-44 bg-slate-100 flex items-center justify-center overflow-hidden">
+          {product.imageUrl ? (
+            <img
+              src={product.imageUrl}
+              alt={product.name}
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              loading="lazy"
+            />
+          ) : (
+            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-tr from-slate-100 to-indigo-50 text-slate-400">
+              <span className="text-5xl sm:text-6xl drop-shadow-sm select-none">
+                {product.icon || "☕"}
+              </span>
+            </div>
+          )}
+
+          {/* NHÃN HÌNH THỨC GIÁ */}
+          <div className="absolute bottom-2 left-2 bg-slate-900/80 backdrop-blur-md px-2 py-0.5 rounded-lg text-[10px] font-black text-white uppercase tracking-wider">
+            {isDineIn ? "Tại quán" : "Mang về"}
+          </div>
+        </div>
+
+        {/* THÔNG TIN MÓN ĂN: TÊN TO, GIÁ RÕ RÀNG */}
+        <div className="p-3.5 flex flex-col flex-1 justify-between">
+          <div>
+            <h3 className="font-black text-slate-900 text-sm sm:text-base leading-snug line-clamp-2 uppercase">
+              {product.name}
+            </h3>
+            {product.trackStock && (
+              <p
+                className={`text-[11px] font-bold mt-1 ${
+                  product.stockQuantity <= (product.lowStockAt ?? 5)
+                    ? "text-rose-600"
+                    : "text-slate-500"
+                }`}
+              >
+                Kho: {product.stockQuantity} {product.unit || "ly"}
+              </p>
+            )}
+          </div>
+
+          <div className="mt-2.5 flex items-center justify-between">
+            <span className="text-base sm:text-lg font-black text-indigo-600">
+              {vnd(currentPrice)}
+            </span>
+            <div className="w-7 h-7 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700 hover:bg-indigo-600 hover:text-white transition-colors">
+              <Plus className="w-4 h-4" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col font-sans pb-24 lg:pb-0">
-      {/* 1. THANH ĐIỀU HƯỚNG TRÊN CÙNG (TOP BAR) */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-30 px-4 py-3 shadow-sm">
+    <div className="min-h-screen bg-slate-100 flex flex-col font-sans pb-32 lg:pb-0">
+      {/* 1. THANH ĐIỀU HƯỚNG TRÊN CÙNG (TOP BAR) - BÙ SAFE AREA TRÁNH TAI THỎ / NOTCH */}
+      <header
+        className="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30 px-4 pb-3 shadow-sm transition-all"
+        style={{ paddingTop: "max(env(safe-area-inset-top, 0px), 14px)" }}
+      >
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             {role === "admin" || user?.email === "admin@gmail.com" ? (
@@ -299,127 +382,118 @@ export const PosPage: React.FC = () => {
       <div className="max-w-7xl mx-auto w-full flex-1 flex gap-6 p-4">
         {/* CỘT TRÁI: DANH MỤC & LƯỚI SẢN PHẨM (HÌNH ẢNH TO RÕ) */}
         <div className="flex-1 flex flex-col min-w-0">
-          {/* THANH DANH MỤC DẠNG PILLS */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-2 no-scrollbar">
+          {/* THANH DANH MỤC: HIỆN RÕ TOÀN BỘ KHÔNG CẦN CUỘN NGANG (RESPONSIVE GRID) */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
             <button
               onClick={() => setSelectedCatId("ALL")}
-              className={`px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all ${
+              className={`px-3 py-2.5 rounded-2xl text-xs sm:text-sm font-black flex items-center justify-center gap-1.5 transition-all ${
                 selectedCatId === "ALL"
-                  ? "bg-slate-900 text-white shadow-md shadow-slate-900/20"
+                  ? "bg-slate-900 text-white shadow-md shadow-slate-900/25 ring-2 ring-slate-900"
                   : "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"
               }`}
             >
-              ☕ Tất Cả ({products.length})
+              <span>🌟 Tất Cả</span>
+              <span
+                className={`text-[11px] px-1.5 py-0.5 rounded-full ${
+                  selectedCatId === "ALL" ? "bg-slate-700 text-white" : "bg-slate-100 text-slate-600"
+                }`}
+              >
+                {products.length}
+              </span>
             </button>
             {categories.map((c) => {
               const count = products.filter((p) => p.categoryId === c.id).length;
+              const isSelected = selectedCatId === c.id;
               return (
                 <button
                   key={c.id}
                   onClick={() => setSelectedCatId(c.id)}
-                  className={`px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all ${
-                    selectedCatId === c.id
-                      ? "bg-slate-900 text-white shadow-md shadow-slate-900/20"
+                  className={`px-3 py-2.5 rounded-2xl text-xs sm:text-sm font-black flex items-center justify-center gap-1.5 transition-all ${
+                    isSelected
+                      ? "bg-slate-900 text-white shadow-md shadow-slate-900/25 ring-2 ring-slate-900"
                       : "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"
                   }`}
                 >
-                  {c.icon ?? "🏷️"} {c.name} ({count})
+                  <span className="truncate">
+                    {c.icon ?? "🏷️"} {c.name}
+                  </span>
+                  <span
+                    className={`text-[11px] px-1.5 py-0.5 rounded-full ${
+                      isSelected ? "bg-slate-700 text-white" : "bg-slate-100 text-slate-600"
+                    }`}
+                  >
+                    {count}
+                  </span>
                 </button>
               );
             })}
           </div>
 
-          {/* LƯỚI SẢN PHẨM: ẢNH TO HƠN, RÕ NÉT, DỄ NHÌN */}
+          {/* LƯỚI SẢN PHẨM: GOM NHÓM THEO DANH MỤC KHI Ở "TẤT CẢ" */}
           {loading ? (
             <div className="flex-1 flex items-center justify-center p-12">
               <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : selectedCatId === "ALL" ? (
+            /* CHẾ ĐỘ "TẤT CẢ": CHIA THEO TỪNG NHÓM DANH MỤC RÕ RÀNG */
+            <div className="space-y-6 pb-8">
+              {categories.map((c) => {
+                const groupProducts = products.filter((p) => p.categoryId === c.id);
+                if (groupProducts.length === 0) return null;
+                return (
+                  <div key={c.id} className="space-y-3">
+                    <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-3.5 py-2 rounded-2xl border border-slate-200/80 shadow-xs">
+                      <span className="text-lg">{c.icon ?? "☕"}</span>
+                      <h2 className="text-sm sm:text-base font-black text-slate-900 uppercase tracking-tight">
+                        {c.name}
+                      </h2>
+                      <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200/60">
+                        {groupProducts.length} món
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3.5 sm:gap-4">
+                      {groupProducts.map(renderProductCard)}
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* Món chưa phân loại nếu có */}
+              {(() => {
+                const uncategorized = products.filter(
+                  (p) => !categories.some((c) => c.id === p.categoryId)
+                );
+                if (uncategorized.length === 0) return null;
+                return (
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-3.5 py-2 rounded-2xl border border-slate-200/80 shadow-xs">
+                      <span className="text-lg">✨</span>
+                      <h2 className="text-sm sm:text-base font-black text-slate-900 uppercase tracking-tight">
+                        Món Khác
+                      </h2>
+                      <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200/60">
+                        {uncategorized.length} món
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3.5 sm:gap-4">
+                      {uncategorized.map(renderProductCard)}
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           ) : filteredProducts.length === 0 ? (
             <div className="flex-1 flex flex-col items-center justify-center p-12 bg-white rounded-3xl border border-slate-200 text-center">
               <Coffee className="w-12 h-12 text-slate-300 mb-3" />
               <p className="text-base font-bold text-slate-700">Chưa có món trong danh mục này</p>
-              <p className="text-xs text-slate-400 mt-1">Vui lòng chọn danh mục khác hoặc thêm món mới</p>
+              <p className="text-xs text-slate-400 mt-1">
+                Vui lòng chọn danh mục khác hoặc thêm món mới
+              </p>
             </div>
           ) : (
+            /* CHẾ ĐỘ LỌC THEO 1 DANH MỤC CỤ THỂ */
             <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3.5 sm:gap-4 pb-8">
-              {filteredProducts.map((product) => {
-                const currentPrice = isDineIn
-                  ? (product.priceDineIn ?? product.priceTakeAway ?? 0)
-                  : (product.priceTakeAway ?? product.priceDineIn ?? 0);
-                const cartQty = cart.get(product.id)?.quantity ?? 0;
-                const isSelected = cartQty > 0;
-
-                return (
-                  <div
-                    key={product.id}
-                    onClick={() => addToCart(product)}
-                    className={`relative bg-white rounded-3xl overflow-hidden border cursor-pointer select-none transition-all duration-200 hover:shadow-lg active:scale-[0.97] flex flex-col ${
-                      isSelected
-                        ? "border-indigo-600 ring-2 ring-indigo-500/20 shadow-md"
-                        : "border-slate-200 hover:border-slate-300 shadow-sm"
-                    }`}
-                  >
-                    {/* BADGE SỐ LƯỢNG KHI ĐÃ CHỌN */}
-                    {isSelected && (
-                      <div className="absolute top-2.5 right-2.5 z-10 w-8 h-8 rounded-full bg-indigo-600 text-white font-black text-sm flex items-center justify-center shadow-lg shadow-indigo-600/40 animate-in zoom-in-75">
-                        {cartQty}
-                      </div>
-                    )}
-
-                    {/* HÌNH ẢNH MÓN HÀNG TO HƠN, RÕ NÉT */}
-                    <div className="relative w-full h-36 sm:h-44 bg-slate-100 flex items-center justify-center overflow-hidden">
-                      {product.imageUrl ? (
-                        <img
-                          src={product.imageUrl}
-                          alt={product.name}
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-tr from-slate-100 to-indigo-50 text-slate-400">
-                          <span className="text-5xl sm:text-6xl drop-shadow-sm select-none">
-                            {product.icon || "☕"}
-                          </span>
-                        </div>
-                      )}
-
-                      {/* NHÃN HÌNH THỨC GIÁ */}
-                      <div className="absolute bottom-2 left-2 bg-slate-900/80 backdrop-blur-md px-2 py-0.5 rounded-lg text-[10px] font-black text-white uppercase tracking-wider">
-                        {isDineIn ? "Tại quán" : "Mang về"}
-                      </div>
-                    </div>
-
-                    {/* THÔNG TIN MÓN ĂN: TÊN TO, GIÁ RÕ RÀNG */}
-                    <div className="p-3.5 flex flex-col flex-1 justify-between">
-                      <div>
-                        <h3 className="font-black text-slate-900 text-sm sm:text-base leading-snug line-clamp-2 uppercase">
-                          {product.name}
-                        </h3>
-                        {product.trackStock && (
-                          <p
-                            className={`text-[11px] font-bold mt-1 ${
-                              product.stockQuantity <= (product.lowStockAt ?? 5)
-                                ? "text-rose-600"
-                                : "text-slate-500"
-                            }`}
-                          >
-                            Kho: {product.stockQuantity} {product.unit || "ly"}
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="mt-2.5 flex items-center justify-between">
-                        <span className="text-base sm:text-lg font-black text-indigo-600">
-                          {vnd(currentPrice)}
-                        </span>
-                        <div className="w-7 h-7 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700 hover:bg-indigo-600 hover:text-white transition-colors">
-                          <Plus className="w-4 h-4" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+              {filteredProducts.map(renderProductCard)}
             </div>
           )}
         </div>
@@ -539,8 +613,11 @@ export const PosPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 3. THANH GIỎ HÀNG NỔI CHO MOBILE (BOTTOM FLOATING BAR) */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 p-3 shadow-2xl safe-area-bottom">
+      {/* 3. THANH GIỎ HÀNG NỔI CHO MOBILE (BOTTOM FLOATING BAR) - SAFE AREA BOTTOM */}
+      <div
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-4 pt-3 shadow-2xl transition-all"
+        style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 16px)" }}
+      >
         <div className="flex items-center justify-between gap-3">
           <div
             onClick={() => setMobileCartOpen(true)}
@@ -577,10 +654,13 @@ export const PosPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 4. MODAL CHI TIẾT GIỎ HÀNG MOBILE */}
+      {/* 4. MODAL CHI TIẾT GIỎ HÀNG MOBILE - SAFE AREA BOTTOM */}
       {mobileCartOpen && (
         <div className="lg:hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex flex-col justify-end">
-          <div className="bg-white rounded-t-3xl max-h-[85vh] flex flex-col p-5 shadow-2xl animate-in slide-in-from-bottom duration-200">
+          <div
+            className="bg-white rounded-t-3xl max-h-[85vh] flex flex-col p-5 shadow-2xl animate-in slide-in-from-bottom duration-200"
+            style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 24px)" }}
+          >
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <h3 className="font-black text-base text-slate-900 flex items-center gap-2">
                 <ShoppingBag className="w-5 h-5 text-indigo-600" />

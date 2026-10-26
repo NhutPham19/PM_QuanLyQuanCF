@@ -8,7 +8,10 @@ interface BottomNavProps {
 
 export const BottomNav: React.FC<BottomNavProps> = ({ onOpenMobileMenu }) => {
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/80 px-2 py-1 pb-[max(env(safe-area-inset-bottom),8px)] shadow-lg shadow-black/5">
+    <nav
+      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/80 px-2 pt-1 shadow-lg shadow-black/5"
+      style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 12px)" }}
+    >
       <div className="flex items-center justify-around">
         <NavLink
           to="/"

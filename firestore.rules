@@ -93,19 +93,20 @@ service cloud.firestore {
         request.resource.data.status == 'VOIDED' &&
         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'voidedAt', 'voidedBy'])
       );
-      allow delete: if false;
+      // Cho phép Admin tự động dọn dẹp các đơn hàng quá 45 ngày
+      allow delete: if isAdmin();
     }
 
     // ================= 4. CHI PHÍ (EXPENSES) =================
 
     // - Nhân viên tạo phiếu chi khi nhập hàng hoặc mua đá/đồ dùng
     // - Chỉ Admin mới có quyền sửa hoặc xem toàn bộ danh mục chi
-    // - CẤM xóa cứng phiếu chi
+    // - Cho phép Admin xóa các khoản chi quá 45 ngày
     match /expenses/{id} {
       allow read: if isStaff();
       allow create: if isStaff();
       allow update: if isAdmin();
-      allow delete: if false;
+      allow delete: if isAdmin();
     }
 
     // ================= 5. SỔ TỔNG KẾT NGÀY (DAILY SUMMARIES) =================
